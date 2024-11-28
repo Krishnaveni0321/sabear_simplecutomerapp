@@ -93,7 +93,8 @@ pipeline {
                     }
                 }
             }
-        }stage("Deploy to Tomcat") {
+        }
+	    stage("Deploy to Tomcat") {
             steps {
                 script {
                     // Assuming your artifact is a .war file in the target folder
@@ -111,7 +112,5 @@ pipeline {
                 }
             }
         }
-    }
-}
-	    
-    
+    } 
+	
