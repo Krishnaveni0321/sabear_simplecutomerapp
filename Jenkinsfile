@@ -97,21 +97,33 @@ pipeline {
 	    stage("Deploy to Tomcat") {
             steps {
                 script {
-                    // Assuming your artifact is a .war file in the target folder
-                    warFile = "target/${pom.artifactId}-${pom.version}.war"
-                    echo "Deploying ${warFile} to Tomcat"
+                    def warFile = "target/SimpleCustomerApp-${BUILD_NUMBER}-SNAPSHOT.war"
+                    def tomcatURL = "http://13.208.184.198:8080/manager/text"
+                    def contextPath = "/SimpleCustomerApp"
 
-                    // Use the Deploy to Container Plugin to deploy to Tomcat
-                    deployWar(
-                        war: warFile,
-                        contextPath: "/${pom.artifactId}",
-                        url: "http://13.208.184.198:8080/",
-                        username: "deployer",
-                        password: "deployer"
-                    )
+                    // Debugging information
+                    echo "WAR file path: ${warFile}"
+                    echo "Deploying to Tomcat at ${tomcatURL}"
+                    echo "Using Jenkins credentials ID: tomcat-deployer"
+
+                    // Attempt deployment with deployWar
+                    try {
+                        deployWar(
+                            war: warFile,
+                            contextPath: contextPath,
+                            url: tomcatURL,
+                            credentialsId: 'tomcat-deployer'
+                        )
+                    } catch (Exception e) {
+                        echo "deployWar failed, falling back to manual curl deployment."
+                        // Fallback to curl deployment
+                        sh """
+                            curl -u deployer:deployer -T ${warFile} \
+                            "${tomcatURL}/deploy?path=${contextPath}&update=true"
+                        """
+                    }
                 }
             }
         }
-    } 
+    }
 }
-	
