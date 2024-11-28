@@ -98,7 +98,7 @@ pipeline {
             steps {
                 script {
                     def warFile = "target/SimpleCustomerApp-${BUILD_NUMBER}-SNAPSHOT.war"
-                    def tomcatURL = "http://13.208.184.198:8080/manager/text"
+                    def tomcatURL = "http://13.208.184.198:8080/"
                     def contextPath = "/SimpleCustomerApp"
 
                     // Debugging information
