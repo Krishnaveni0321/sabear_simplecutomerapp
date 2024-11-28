@@ -93,6 +93,25 @@ pipeline {
                     }
                 }
             }
+        }stage("Deploy to Tomcat") {
+            steps {
+                script {
+                    // Assuming your artifact is a .war file in the target folder
+                    warFile = "target/${pom.artifactId}-${pom.version}.war"
+                    echo "Deploying ${warFile} to Tomcat"
+
+                    // Use the Deploy to Container Plugin to deploy to Tomcat
+                    deployWar(
+                        war: warFile,
+                        contextPath: "/${pom.artifactId}",
+                        url: "http://13.208.184.198:8080/",
+                        username: "deployer",
+                        password: "deployer"
+                    )
+                }
+            }
         }
     }
 }
+	    
+    
